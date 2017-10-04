@@ -1,14 +1,31 @@
-var webdriver = require('selenium-webdriver'),
-    By = webdriver.By,
-    until = webdriver.until;
 
-var driver = new webdriver.Builder()
-    .forBrowser('chrome')
-    .usingServer('http://localhost:4444/wd/hub')
-    .build();
+define([
+    'intern!object',
+    'intern/chai!assert',
+    '../support/pages/IndexPage'
+], function (registerSuite, assert, IndexPage) {
+    registerSuite(function () {
+        var indexPage;
+        return {
+            // on setup, we create an IndexPage instance
+            // that we will use for all the tests
+            setup: function () {
+                indexPage = new IndexPage(this.remote);
+            },
 
-driver.get('http://www.google.com/ncr');
-driver.findElement(By.name('q')).sendKeys('webdriver');
-driver.findElement(By.name('btnG')).click();
-driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-driver.quit();
+            'successful login': function () {
+                // then from the tests themselves we simply call
+                // methods on the page object and then verify
+                // that the expected result is returned
+                return indexPage
+                    .login('eswaribala', 'vigneshbala')
+                    .then(function (loggedIn) {
+                        assert.isTrue(loggedIn,
+                            'Valid username and password should log in successfully');
+                    });
+            },
+
+            // …additional tests…
+        };
+    });
+});
