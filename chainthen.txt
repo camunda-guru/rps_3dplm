@@ -1,0 +1,27 @@
+return this.remote
+    .get('page.html')
+ 
+    // Code to perform login action
+    .then(function () {
+        return this.parent
+            .findById('username')
+            .type('foo')
+            .end()
+ 
+            .findById('password')
+            .type('bar')
+            .end
+ 
+            .findById('submit')
+            .click();
+    })
+ 
+    // Code to check that the login was successful
+    .then(function () {
+        return this.parent
+            .findByTag('h1')
+            .getVisibleText()
+            .then(function (text) {
+                assert.equal(text, 'Welcome, foo!');
+            });
+    })
